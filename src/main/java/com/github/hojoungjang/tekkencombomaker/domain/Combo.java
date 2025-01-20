@@ -26,4 +26,9 @@ public class Combo {
         this.name = name;
         this.command = command;
     }
+
+    public void update(String name, String command) {
+        this.name = name;
+        this.command = command;
+    }
 }
