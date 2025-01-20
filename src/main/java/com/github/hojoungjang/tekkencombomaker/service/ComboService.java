@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 public class ComboService {
     private final ComboRepository comboRepo;
 
+    public Combo getComboById(long id) {
+        return comboRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    }
+
     public Combo createCombo(CreateComboRequest request) {
         return comboRepo.save(request.toEntity());
     }

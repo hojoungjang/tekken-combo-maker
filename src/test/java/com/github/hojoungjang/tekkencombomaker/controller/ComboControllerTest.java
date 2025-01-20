@@ -19,7 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -66,5 +68,27 @@ class ComboControllerTest {
         assertThat(combos.size()).isEqualTo(1);
         assertThat(combos.get(0).getName()).isEqualTo(name);
         assertThat(combos.get(0).getCommand()).isEqualTo(command);
+    }
+
+    @DisplayName("getComboById: 콤보 데이터를 불러오는데 성공.")
+    @Test
+    public void getComboById() throws Exception {
+        //given
+        final String url = "/api/v1/combo/{id}";
+        final String name = "Phoenix Smasher";
+        final String command = "236RP";
+
+        Combo combo = comboRepo.save(Combo.builder()
+                .name(name)
+                .command(command)
+                .build());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(get(url, combo.getId()));
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.command").value(command));
     }
 }
