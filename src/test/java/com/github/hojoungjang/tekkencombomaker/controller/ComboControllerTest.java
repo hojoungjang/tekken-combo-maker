@@ -70,6 +70,27 @@ class ComboControllerTest {
         assertThat(combos.get(0).getCommand()).isEqualTo(command);
     }
 
+    @DisplayName("createCombo: 콤보 데이터 요청 validation 실패.")
+    @Test
+    public void createComboRequestValidation() throws Exception {
+        // given
+        final String url = "/api/v1/combos";
+        final String name = "Phoenix Smasher";
+        final String command = null;
+        final CreateComboRequest request = new CreateComboRequest(name, command);
+
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        result.andExpect(status().isBadRequest());
+    }
+
+
     @DisplayName("getComboById: 콤보 데이터를 불러오는데 성공.")
     @Test
     public void getComboById() throws Exception {
