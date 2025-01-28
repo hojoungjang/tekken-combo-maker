@@ -8,6 +8,7 @@ import com.github.hojoungjang.tekkencombomaker.service.ComboService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class ComboController {
     }
 
     @PostMapping
-    public ResponseEntity<Combo> createCombo(@RequestBody CreateComboRequest request) {
+    public ResponseEntity<Combo> createCombo(@RequestBody @Validated CreateComboRequest request) {
         Combo combo = comboService.createCombo(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(combo);
     }
