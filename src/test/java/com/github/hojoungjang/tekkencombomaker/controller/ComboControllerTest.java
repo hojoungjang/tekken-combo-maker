@@ -1,6 +1,7 @@
 package com.github.hojoungjang.tekkencombomaker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.hojoungjang.tekkencombomaker.config.error.ErrorCode;
 import com.github.hojoungjang.tekkencombomaker.domain.Combo;
 import com.github.hojoungjang.tekkencombomaker.dto.CreateComboRequest;
 import com.github.hojoungjang.tekkencombomaker.dto.UpdateComboRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -182,5 +184,39 @@ class ComboControllerTest {
         Combo updatedCombo = comboRepo.findById(combo.getId()).orElseThrow();
         assertThat(updatedCombo.getName()).isEqualTo(newName);
         assertThat(updatedCombo.getCommand()).isEqualTo(newCommand);
+    }
+
+    @DisplayName("getComboById: 잘못된 HTTP 메서드로 콤보를 조회하려고 하면 조회에 실패한다.")
+    @Test
+    public void invalidHttpMethod() throws Exception {
+        // given
+        final String url = "/api/v1/combos/{id}";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(post(url, 1));
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value(ErrorCode.METHOD_NOT_ALLOWED.getMessage()));
+    }
+
+    @DisplayName("getComboById: 존재하지 않는 아티클을 조회하려고 하면 조회에 실패한다.")
+    @Test
+    public void findComboInvalidCombo() throws Exception {
+        // given
+        final String url = "/api/v1/combos/{id}";
+        final long invalidId = 1;
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(get(url, invalidId));
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(ErrorCode.NOT_FOUND.getMessage()))
+                .andExpect(jsonPath("$.code").value(ErrorCode.NOT_FOUND.getCode()));
     }
 }

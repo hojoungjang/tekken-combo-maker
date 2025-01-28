@@ -1,5 +1,6 @@
 package com.github.hojoungjang.tekkencombomaker.service;
 
+import com.github.hojoungjang.tekkencombomaker.config.error.exception.NotFoundException;
 import com.github.hojoungjang.tekkencombomaker.domain.Combo;
 import com.github.hojoungjang.tekkencombomaker.dto.CreateComboRequest;
 import com.github.hojoungjang.tekkencombomaker.dto.UpdateComboRequest;
@@ -16,7 +17,7 @@ public class ComboService {
     private final ComboRepository comboRepo;
 
     public Combo getComboById(long id) {
-        return comboRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+        return comboRepo.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public List<Combo> getAllCombo() {
