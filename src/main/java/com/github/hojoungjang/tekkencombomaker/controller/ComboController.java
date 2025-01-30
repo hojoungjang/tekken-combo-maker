@@ -20,7 +20,7 @@ public class ComboController {
     private final ComboService comboService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ComboResponse> getComboById(@PathVariable long id) {
+    public ResponseEntity<ComboResponse> getComboById(@PathVariable("id") long id) {
         Combo combo = comboService.getComboById(id);
         return ResponseEntity.ok()
                 .body(new ComboResponse(combo));
