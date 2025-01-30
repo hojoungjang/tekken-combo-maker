@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.github.hojoungjang.tekkencombomaker.config.error.exception.BusinessBaseException;
 
@@ -28,6 +29,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handle(Exception e) {
         log.error("Exception", e);
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e) {
+        log.error("MethodArgumentNotValidException", e);
+        return createErrorResponseEntity(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
